@@ -28,7 +28,6 @@ function Banner() {
     // }, []);
 
 
-    console.log(currentSlide);
 
   return (
     <div className='w-full h-auto overflow-hidden'>
