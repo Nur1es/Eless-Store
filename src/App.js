@@ -6,6 +6,7 @@ import { Outlet, RouterProvider, ScrollRestoration, createBrowserRouter } from '
 import Cards from './pages/Cards';
 import { productsData } from './api/Api';
 import Product from './components/Product';
+import Login from './pages/Login';
 
 function App() {
 
@@ -35,8 +36,12 @@ function App() {
           element:<Product/>,
         },
         {
-          path:'/cart',
+          path:'/bag',
           element:<Cards/>
+        },
+        {
+          path:'/login',
+          element:<Login />
         },
       ]
     }

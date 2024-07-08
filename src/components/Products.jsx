@@ -1,30 +1,31 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductsCard from './ProductsCard';
 
 export default function Products({ products }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 20;
-  const productsRef = useRef(null);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
+  const productsPerPage = 12;
+
 
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   const handlePreviousPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
   };
 
   const handleNextPage = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
   };
 
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-
   useEffect(() => {
-    if (productsRef.current) {
-      productsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentPage]);
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const newProducts = products.slice(0, indexOfLastProduct);
+    setDisplayedProducts(newProducts);
+  }, [currentPage, products]);
 
   return (
     <div className='py-10'>
@@ -37,9 +38,9 @@ export default function Products({ products }) {
           voluptates fuga assumenda laboriosam sed. Distinctio, eaque laborum?
         </p>
       </div>
-      <div className='max-w-screen-xl mx-auto py-10 grid grid-cols-4 gap-10' ref={productsRef}>
+      <div className='max-w-screen-xl mx-auto py-10 grid grid-cols-4 gap-10'>
         {
-          currentProducts.map((item) => (
+          displayedProducts.map((item) => (
             <ProductsCard key={item.id} product={item} />
           ))
         }
