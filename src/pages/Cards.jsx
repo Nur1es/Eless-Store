@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
 import CartItem from "../components/CartItem";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import StripeCheckout from "react-stripe-checkout";
 
 function Cards() {
   const productData = useSelector((state) => state.eless.productData)
+  const userInfo = useSelector((state) => state.eless.userInfo)
+  const [payNow, setPayNow] = useState(false)
 
   const [totalAmt, setTotalAmt] = useState('')
+
+  const handleCheckout = () => {
+    if(userInfo){
+      setPayNow(true)
+    }else{
+      toast.error('Pleas sign in to Checkout')
+    }
+  }
 
   useEffect(()=>{
     let price = 0
@@ -41,7 +53,20 @@ function Cards() {
             {' '}
             Total <span className="text-xl font-bold">$ {totalAmt}</span>
           </p>
-          <button className="text-base bg-black text-white w-full py-3 mt-6 hover:bg-gray-800 duration-300">procced to checkout</button>
+          <button onClick={handleCheckout} className="text-base bg-black text-white w-full py-3 mt-6 hover:bg-gray-800 duration-300">procced to checkout</button> 
+          {
+            payNow && <div className="w-full mt-6 flex items-center justify-center">
+              <StripeCheckout
+                stripeKey="pk_test_51Pah9hDb6EixqP8thsclofPijWYFyI8NB3yW5X6CUaPZj6RaIqGkpF0JjBT96zPqvYeCsyoe92nJwOa9NLJSYVDB000dSNzhLR"
+                name="Eless online shopping"
+                amount={totalAmt * 100}
+                label="Pay to eless"
+                description={`Your Payment amount is $${totalAmt}`}
+                // token={payment}
+                email={userInfo.email}
+              />
+            </div>
+          }
         </div>
       </div>
     </div>
